@@ -1,0 +1,38 @@
+package io.github.kimmking.gateway;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.kimmking.gateway.inbound.HttpInboundServer;
+import io.github.kimmking.gateway.router.HttpEndpointRouter;
+import io.github.kimmking.gateway.router.HttpEndpointRouterImpl;
+
+public class NettyServerApplication {
+    
+    public final static String GATEWAY_NAME = "NIOGateway";
+    public final static String GATEWAY_VERSION = "1.0.0";
+    
+    public static void main(String[] args) {
+        /*HttpEndpointRouter router = new HttpEndpointRouterImpl();
+        List<String> endpoints = new ArrayList<String>();
+        endpoints.add("http://localhost:8801");
+        endpoints.add("http://localhost:8802");
+        endpoints.add("http://localhost:8803");*/
+        String proxyServer = System.getProperty("proxyServer","http://localhost:8088");
+        String proxyPort = System.getProperty("proxyPort","8888");
+        
+          //  http://localhost:8888/api/hello  ==> gateway API
+          //  http://localhost:8088/api/hello  ==> backend service
+    
+        int port = Integer.parseInt(proxyPort);
+        System.out.println(GATEWAY_NAME + " " + GATEWAY_VERSION +" starting...");
+        HttpInboundServer server = new HttpInboundServer(port, proxyServer);
+        System.out.println(GATEWAY_NAME + " " + GATEWAY_VERSION +" started at http://localhost:" + port + " for server:" + proxyServer);
+        try {
+            server.run();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+}
